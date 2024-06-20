@@ -1,0 +1,9 @@
+[package]
+name = "fastfetch-rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sysinfo = "0.21.0"
+colored = "2.0"
+clap = { version = "4.0.17", features = ["derive"] }
