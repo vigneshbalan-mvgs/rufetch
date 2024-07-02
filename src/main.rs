@@ -1,12 +1,13 @@
 use clap::{Arg, Command};
 use colored::*;
 use sysinfo::{DiskExt, NetworkExt, ProcessorExt, System, SystemExt};
+use std::fs;
 
 fn main() {
     // Command-line argument parsing using clap
     let matches = Command::new("rufetch")
         .version("1.0")
-        .author("Your Name <your.email@example.com>")
+        .author("Your Name vigneshmvgs2003@gmail.com")
         .about("A fast system information fetcher written in Rust")
         .arg(
             Arg::new("all")
@@ -44,20 +45,34 @@ fn main() {
     let mut sys = System::new_all();
     sys.refresh_all();
 
+    let ascii_art_file = "ascii_art_file.txt";
+    let ascii_art = match fs::read_to_string(ascii_art_file) {
+        Ok(content) => content,
+        Err(_) => {
+            eprintln!("Failed to read ASCII art from {}", ascii_art_file);
+            return;
+        }
+    };    
+
+ 
+
     // Fetch common information
     let os_name = sys.name().unwrap_or_else(|| "Unknown".to_string());
     let kernel_version = sys
         .kernel_version()
         .unwrap_or_else(|| "Unknown".to_string());
     let hostname = sys.host_name().unwrap_or_else(|| "Unknown".to_string());
-    let uptime = sys.uptime();
+    let hours = (sys.uptime())/3600;
+    let minutes = ((sys.uptime())%3600)/60;
+    let seconds = (sys.uptime())% 60;
 
     // Print common information
     println!("{}", "rufetch".bold().blue());
+    println!("{}", ascii_art );
     println!("{}: {}", "OS".green(), os_name);
     println!("{}: {}", "Kernel".green(), kernel_version);
     println!("{}: {}", "Hostname".green(), hostname);
-    println!("{}: {} seconds", "Uptime".green(), uptime);
+    println!("{}: {} hours {} minutes {} seconds", "Uptime".green(), hours, minutes, seconds);
 
     // Display information based on user input
     if matches.contains_id("all") || matches.contains_id("cpu") {
